@@ -5,16 +5,17 @@
 @file:volcano(qlearning).py
 @time:2021/11/06
 """
+import math
 import random
 import numpy as np
 
 # hyper-parameters
-# random.seed(42)
-slipProb = 0.3  # probability of slipping which will cause random action
-numIter = 100000  # number of iterations
-gamma = 1  # discount rate
-epsilon = 1  # greedy
-eta = 0.01  # learning rate
+random.seed(42)
+slipProb = 0.1  # probability of slipping which will cause random action
+numIter = 10000  # number of iterations
+gamma = 0.8  # discount rate
+epsilon = 0.5  # greedy
+# eta = 0.01  # learning rate
 
 
 # actions
@@ -100,29 +101,33 @@ class env(object):
 
 # q-learning calculation
 def qlearning(volcano):
+    eta = 0
     for episode in range(numIter):  # main loop
 
+
+        print(f"episode {episode}")
         stateIndex = 4  # start position
         isTerminated = False  # flag to determine when to stop
         while not isTerminated:
+            eta += 1
             action = volcano.chooseAction(stateIndex=stateIndex)  # choose an action for current state
             nextStateIndex, reward = volcano.takeAction(stateIndex=stateIndex, action=action)  # get s' and reward
             actionIndex = volcano.actions.index(action)  # action's index
-            qPredict = volcano.qtable[stateIndex][actionIndex] # calculate q-predict
-            if not volcano.isEnd(nextStateIndex):   # if not at end
-                qTarget = reward + gamma * max(volcano.qtable[nextStateIndex]) # calculate q-target
-            else:   # if at end
-                qTarget = reward # calculate q-target
-                isTerminated = True # modify flag to stop this epoch
+            qPredict = volcano.qtable[stateIndex][actionIndex]  # calculate q-predict
+            if not volcano.isEnd(nextStateIndex):  # if not at end
+                qTarget = reward + gamma * max(volcano.qtable[nextStateIndex])  # calculate q-target
+            else:  # if at end
+                qTarget = reward  # calculate q-target
+                isTerminated = True  # modify flag to stop this epoch
 
-            volcano.qtable[stateIndex][actionIndex] += eta * (qTarget - qPredict)  # modify Q value
-            stateIndex = nextStateIndex # s = s'
+            volcano.qtable[stateIndex][actionIndex] += (1.0 / math.sqrt(eta)) * (qTarget - qPredict)  # modify Q value
+            stateIndex = nextStateIndex  # s = s'
 
     return volcano.qtable
 
 
 if __name__ == '__main__':
-    volcano = env() # create env
+    volcano = env()  # create env
     qtable = qlearning(volcano)
     for i in range(len(qtable)):
         if not volcano.isEnd(i):
