@@ -91,7 +91,7 @@ class volcanoMDP(MDP):
 
 
 if __name__ == '__main__':
-    mdp = volcanoMDP(m=3, n=4, slipProb=0.1, gamma=0.8, r_lava=-50, r_fab=20, r_safe=2)
+    mdp = volcanoMDP(m=3, n=4, slipProb=0.3, gamma=1, r_lava=-50, r_fab=20, r_safe=2)
     # print(mdp.takeAction((3, 4), 'W'))
     # print(mdp.succAndProbReward((2, 2), 'E'))
     # print(mdp.actions((3, 4)))

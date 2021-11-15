@@ -81,11 +81,11 @@ class QLgreedy(RLAlgorithm):
 ############################################################
 
 if __name__ == '__main__':
-    mdp = volcanoMDP(m=3, n=4, slipProb=0.1, gamma=0.8, r_lava=-50, r_fab=20, r_safe=2)
+    mdp = volcanoMDP(m=3, n=4, slipProb=0.3, gamma=1, r_lava=-50, r_fab=20, r_safe=2)
     mdp.computeStates()
-    rl = QLgreedy(actions=mdp.actions, discount=mdp.discount(), explorationProb=0.5)  # explorationProb is epsilon
+    rl = QLgreedy(actions=mdp.actions, discount=mdp.discount(), explorationProb=1)  # explorationProb is epsilon
 
-    nT = 100000
+    nT = 20
     totalRewards = simulate(mdp=mdp, rl=rl, numTrials=nT, maxIterations=1000, verbose=True, sort=False)
 
     rl.printQs(mdp.startState(), mdp.states)
